@@ -1,0 +1,25 @@
+#!/bin/bash
+#SBATCH -J mbtg_fg_l
+#SBATCH -o test.o%j
+#SBATCH -e test.e%j
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH -p normal
+#SBATCH -t 1:00:00
+
+ml gcc/13.2.0
+ml impi/21.9.0
+
+export OMP_NUM_THREADS=56
+export OMP_PROC_BIND=close
+export OMP_PLACES=cores
+
+QTR_PACKAGE=__FULL_PATH__/q_truncate-L-shaped
+if [[ ! -x "$QTR_PACKAGE/qtr_mpi" ]]; then
+    echo "ERROR: cannot execute $QTR_PACKAGE/qtr_mpi" >&2
+    exit 1
+fi
+
+date
+time ibrun "$QTR_PACKAGE/qtr_mpi" ./ini.test
+date

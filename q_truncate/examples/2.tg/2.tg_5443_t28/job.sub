@@ -1,0 +1,17 @@
+#!/bin/bash
+#SBATCH -J test
+#SBATCH -o test.o%j
+#SBATCH -e test.e%j
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH -p development
+#SBATCH -t 00:30:00
+
+ml gcc/13.2.0
+ml impi/21.9.0
+
+export OMP_NUM_THREADS=28
+export OMP_PROC_BIND=close
+export OMP_PLACES=cores
+
+time ibrun __FULL_PATH__/qtr_mpi ./ini.test
